@@ -125,22 +125,40 @@ export default function ReportsModule() {
       </div>
 
       <Card className="shadow-lg border-2">
-        <CardHeader className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 bg-gradient-to-r from-primary/5 to-background">
-          <CardTitle className="text-xl">📊 Filters</CardTitle>
-          <div className="flex flex-wrap items-end gap-2">
-            <Button variant={key === "today" ? "default" : "outline"} onClick={() => { setKey("today"); setPage(1); }}>
-              Today
-            </Button>
-            <Button variant={key === "yesterday" ? "default" : "outline"} onClick={() => { setKey("yesterday"); setPage(1); }}>
-              Yesterday
-            </Button>
-            <Button variant={key === "week" ? "default" : "outline"} onClick={() => { setKey("week"); setPage(1); }}>
-              This Week
-            </Button>
-            <Button variant={key === "month" ? "default" : "outline"} onClick={() => { setKey("month"); setPage(1); }}>
-              This Month
-            </Button>
-            <div className="flex items-end gap-2">
+        <CardHeader className="bg-linear-to-r from-primary/5 to-background">
+          <CardTitle className="text-xl mb-4">📊 Filters</CardTitle>
+          <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <Button 
+                variant={key === "today" ? "default" : "outline"} 
+                onClick={() => { setKey("today"); setPage(1); }}
+                className="w-full text-sm"
+              >
+                Today
+              </Button>
+              <Button 
+                variant={key === "yesterday" ? "default" : "outline"} 
+                onClick={() => { setKey("yesterday"); setPage(1); }}
+                className="w-full text-sm"
+              >
+                Yesterday
+              </Button>
+              <Button 
+                variant={key === "week" ? "default" : "outline"} 
+                onClick={() => { setKey("week"); setPage(1); }}
+                className="w-full text-sm"
+              >
+                This Week
+              </Button>
+              <Button 
+                variant={key === "month" ? "default" : "outline"} 
+                onClick={() => { setKey("month"); setPage(1); }}
+                className="w-full text-sm"
+              >
+                This Month
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <Input
                 type="date"
                 value={from}
@@ -150,6 +168,7 @@ export default function ReportsModule() {
                   setPage(1)
                 }}
                 aria-label="From date"
+                className="w-full"
               />
               <Input
                 type="date"
@@ -160,6 +179,7 @@ export default function ReportsModule() {
                   setPage(1)
                 }}
                 aria-label="To date"
+                className="w-full"
               />
             </div>
           </div>
@@ -167,59 +187,61 @@ export default function ReportsModule() {
       </Card>
 
       <Card>
-        <CardHeader className="flex items-center justify-between">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <CardTitle>Sales Report</CardTitle>
-          <Button variant="outline" onClick={exportSales} className="gap-2 bg-transparent">
-            <Download className="size-4" /> CSV
+          <Button variant="outline" onClick={exportSales} className="gap-2 bg-transparent w-full sm:w-auto">
+            <Download className="size-4" /> Export CSV
           </Button>
         </CardHeader>
-        <CardContent className="overflow-x-auto">
-          <Table>
-            <TableHeader className="sticky top-0 bg-card">
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Product Code</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Packaging</TableHead>
-                <TableHead className="text-right">Qty</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-                <TableHead className="text-right">Revenue</TableHead>
-                <TableHead className="text-right">Profit</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedList.map((s) => {
-                const revenue = s.quantitySold * s.sellingPrice
-                const profit = (s.sellingPrice - s.sourcingPrice) * s.quantitySold
-                return (
-                  <TableRow key={s.id}>
-                    <TableCell className="text-xs">{new Date(s.date).toLocaleDateString()} {new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</TableCell>
-                    <TableCell className="font-medium">{s.productCode}</TableCell>
-                    <TableCell>{s.name}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{s.packaging}</TableCell>
-                    <TableCell className="text-right">{s.quantitySold}</TableCell>
-                    <TableCell className="text-right">{s.sellingPrice.toFixed(2)}</TableCell>
-                    <TableCell className="text-right font-medium">{revenue.toFixed(2)}</TableCell>
-                    <TableCell className="text-right text-green-600 dark:text-green-400 font-medium">+{profit.toFixed(2)}</TableCell>
-                  </TableRow>
-                )
-              })}
-              {list.length === 0 && (
+        <CardContent className="overflow-x-auto -mx-6 sm:mx-0">
+          <div className="min-w-full inline-block align-middle">
+            <Table className="w-full">
+              <TableHeader className="sticky top-0 bg-card z-10">
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
-                    No sales in selected range.
-                  </TableCell>
+                  <TableHead className="min-w-[140px]">Date</TableHead>
+                  <TableHead className="min-w-[100px]">Code</TableHead>
+                  <TableHead className="min-w-[120px]">Name</TableHead>
+                  <TableHead className="min-w-[90px]">Pack</TableHead>
+                  <TableHead className="text-right min-w-[60px]">Qty</TableHead>
+                  <TableHead className="text-right min-w-20">Price</TableHead>
+                  <TableHead className="text-right min-w-[90px]">Revenue</TableHead>
+                  <TableHead className="text-right min-w-20">Profit</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {paginatedList.map((s) => {
+                  const revenue = s.quantitySold * s.sellingPrice
+                  const profit = (s.sellingPrice - s.sourcingPrice) * s.quantitySold
+                  return (
+                    <TableRow key={s.id}>
+                      <TableCell className="text-xs whitespace-nowrap">{new Date(s.date).toLocaleDateString()} {new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</TableCell>
+                      <TableCell className="font-medium">{s.productCode}</TableCell>
+                      <TableCell className="max-w-[150px] truncate">{s.name}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{s.packaging}</TableCell>
+                      <TableCell className="text-right">{s.quantitySold}</TableCell>
+                      <TableCell className="text-right">{s.sellingPrice.toFixed(2)}</TableCell>
+                      <TableCell className="text-right font-medium">{revenue.toFixed(2)}</TableCell>
+                      <TableCell className="text-right text-green-600 dark:text-green-400 font-medium">+{profit.toFixed(2)}</TableCell>
+                    </TableRow>
+                  )
+                })}
+                {list.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                      No sales in selected range.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t">
-            <div className="text-sm text-muted-foreground">
-              Showing {(page - 1) * itemsPerPage + 1} to {Math.min(page * itemsPerPage, list.length)} of {list.length} transactions
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-6 py-4 border-t">
+            <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
+              Showing {(page - 1) * itemsPerPage + 1} to {Math.min(page * itemsPerPage, list.length)} of {list.length}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap justify-center">
               <Button
                 variant="outline"
                 size="sm"
@@ -266,13 +288,13 @@ export default function ReportsModule() {
         )}
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Top Selling Products</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Top Selling Products</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
+          <CardContent className="px-2 sm:px-6">
+            <div className="overflow-x-auto max-h-[400px] overflow-y-auto -mx-2 sm:mx-0">
               <Table>
                 <TableHeader className="sticky top-0 bg-card z-10">
                   <TableRow>
@@ -302,10 +324,10 @@ export default function ReportsModule() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Low Stock Alerts (Qty &lt; 5)</CardTitle>
+            <CardTitle className="text-base sm:text-lg">Low Stock Alerts (Qty &lt; 5)</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
+          <CardContent className="px-2 sm:px-6">
+            <div className="overflow-x-auto max-h-[400px] overflow-y-auto -mx-2 sm:mx-0">
               <Table>
                 <TableHeader className="sticky top-0 bg-card z-10">
                   <TableRow>
